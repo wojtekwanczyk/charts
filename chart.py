@@ -132,6 +132,8 @@ class Chart:
 
     # finds position of country in given year as index, returns index (stating form 0)
     def findPosition(self, nr, name):
+        if nr >= self.data_qtty:
+            return -1
         for j in range(len(self.country[nr])):
             if name == self.country[nr][j]:
                 return j
@@ -250,8 +252,8 @@ class Chart:
     def throughYears(self, country):
         pos = []
         for i in range(self.data_qtty):
-            pos.append(self.findPosition(i, country))
-        plt.plot(self.years, pos, "g")
+            pos.append(self.findPosition(i, country) + 1)
+        plt.plot(self.years, pos, "g", self.years, pos, "go")
         plt.ylabel("Rank")
         plt.xlabel("Year")
         plt.title(str(country) + " rank")
@@ -274,9 +276,12 @@ wykres.throughYears("Poland")
 wykres.throughYears("Belarus")
 '''
 
+wykres.throughYears("Switzerland")
 
 # finding postion of a country
 # print(wykres.findPosition(0, "Poland"))
+# print(wykres.findPosition(0, "Switzerland"))
+
 
 # str representation - chart
 # print(wykres)
@@ -310,7 +315,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(wykres.findPosition(1,"Poland"), 56)
         self.assertEqual(wykres.findPosition(2,"Poland"), 45)
         self.assertEqual(wykres.findPosition(2,"qwerty"), -1)
-
+        self.assertEqual(wykres.findPosition(3,"Poland"), -1)
 
 
 if __name__ == '__main__':
