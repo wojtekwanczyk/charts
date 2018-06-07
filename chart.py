@@ -2,13 +2,17 @@ import csv, sys
 import unittest
 import matplotlib.pyplot as plt
 from random import randint
+import copy
 
 
 class Data:
     def __init__(self, name):
-        with open(name) as data_file:
-            r = csv.reader(data_file)
-            self.data = list(r)
+        if name != "":
+            with open(name) as data_file:
+                r = csv.reader(data_file)
+                self.data = list(r)
+        else:
+            self.data = []
 
     def get_list(self):
         return self.data
@@ -24,9 +28,18 @@ class Data:
         return ret
 
     def __add__(self, other):
+        new = copy.copy(self)
         for l in range(1, len(other.data)):
-            self.data.append(other.data[l])
-        return self
+            new.data.append(other.data[l])
+        return new
+
+    # mul override - finds countries with the same position
+    def __mul__(self, other):
+        new = Data("")
+        for i in range(1, len(other.data)):
+            if self.data[i][0] == other.data[i][0]:
+                new.data.append(self.data[i])
+        return new
 
 
 class Chart:
@@ -281,9 +294,12 @@ data2 = Data(sys.argv[2])
 # print(data1)
 
 # add override
-# data3 = data1 + data2
-# print(data3)
+#data3 = data1 + data2
+#print(data3)
 
+# mul override - finds countries with the same position
+data4 = data1 * data2
+print(data4)
 
 class MyTestCase(unittest.TestCase):
 
