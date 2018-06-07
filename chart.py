@@ -8,10 +8,12 @@ import copy
 class Data:
     def __init__(self, name):
         if name != "":
+            self.year = name[:-4]
             with open(name) as data_file:
                 r = csv.reader(data_file)
                 self.data = list(r)
         else:
+            self.year = "2015"
             self.data = []
 
     def get_list(self):
@@ -31,14 +33,6 @@ class Data:
         new = copy.copy(self)
         for l in range(1, len(other.data)):
             new.data.append(other.data[l])
-        return new
-
-    # mul override - finds countries with the same position
-    def __mul__(self, other):
-        new = Data("")
-        for i in range(1, len(other.data)):
-            if self.data[i][0] == other.data[i][0]:
-                new.data.append(self.data[i])
         return new
 
 
@@ -289,17 +283,16 @@ wykres.throughYears("Belarus")
 
 data1 = Data(sys.argv[1])
 data2 = Data(sys.argv[2])
+data3 = Data(sys.argv[3])
+
 
 # str representation - data
 # print(data1)
 
 # add override
-#data3 = data1 + data2
-#print(data3)
+#data4 = data1 + data2
+#print(data4)
 
-# mul override - finds countries with the same position
-data4 = data1 * data2
-print(data4)
 
 class MyTestCase(unittest.TestCase):
 
