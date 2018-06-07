@@ -3,7 +3,7 @@ import unittest
 import matplotlib.pyplot as plt
 from random import randint
 import copy
-
+import numpy as np
 
 class Data:
     def __init__(self, name):
@@ -249,18 +249,58 @@ class Chart:
 
         plt.show()
 
-    def throughYears(self, country):
+    def throughYears(self, country, c, *args):
         pos = []
         for i in range(self.data_qtty):
             pos.append(self.findPosition(i, country) + 1)
-        plt.plot(self.years, pos, "g", self.years, pos, "go")
+        plt.plot(self.years, pos, c, self.years, pos, c + "o")
         plt.ylabel("Rank")
         plt.xlabel("Year")
         plt.title(str(country) + " rank")
         #plt.subplots_adjust(left=0.2)
+        if len(args) > 0:
+            plt.savefig(args[0])
         plt.show()
 
+    def compareTwo(self, filenr, *args):
+        pos = []
+        ys = []
+        rects = []
+        N = 6
+        ind = np.arange(N)  # the x locations for the groups
+        w = 0.8
+        width = w/len(args)           # the width of the bars
+        fig, ax = plt.subplots()
+        colors = ['r', 'y', 'b', 'g', 'c', 'm']
 
+
+        x = 0
+        for i in range(len(args)):
+            pos.append(self.findPosition(filenr, args[i]))
+            ys.append([self.generosity[filenr][pos[i]], self.trust[filenr][pos[i]],
+               self.freedom[filenr][pos[i]], self.health[filenr][pos[i]],
+               self.economy[filenr][pos[i]], self.family[filenr][pos[i]]])
+            rects.append(ax.bar(ind + x, ys[i], width, color = colors[i]))
+            x += width
+
+        # add some text for labels, title and axes ticks
+        ax.set_ylabel('Rates')
+        ax.set_title('Comparision between countries')
+        ax.set_xticks(ind + width / 2)
+        ax.set_xticklabels(('Generosity', 'Trust', 'Freedom', 'Health', 'Economy', 'Family'))
+
+
+        cs_tuple = tuple(args)
+        rec_list = []
+        for i in range(len(args)):
+            rec_list.append(rects[i][0])
+        rec_tuple = tuple(rec_list)
+
+
+
+        ax.legend(rec_tuple, cs_tuple)
+
+        plt.show()
 
 
 wykres = Chart()
@@ -271,12 +311,12 @@ wykres.life_expectancy(1, 15)
 wykres.few_charts(1,3)
 wykres.dystopia_chart(1, 10, "G", "France", "Belarus", "China", "Togo")
 wykres.freedom_chart(1, 10, "C", "France", "Belarus", "China", "Togo")
-wykres.trust_chart(1, 10, "R", "France", "Belarus", "China", "Japan")
-wykres.throughYears("Poland")
-wykres.throughYears("Belarus")
+wykres.trust_chart(1, 10, "R", "France", "Belarus", "China", "Japan", "Poland", "Germany")
+wykres.throughYears("Poland", 'g')
+wykres.throughYears("Belarus", 'b')
 '''
 
-wykres.throughYears("Switzerland")
+# wykres.throughYears("Switzerland", "g", "swtz.png")
 
 # finding postion of a country
 # print(wykres.findPosition(0, "Poland"))
@@ -290,6 +330,7 @@ data1 = Data(sys.argv[1])
 data2 = Data(sys.argv[2])
 data3 = Data(sys.argv[3])
 
+wykres.compareTwo(0, "Egypt", "Niger", 'RPA', 'Sri Lanka')
 
 # str representation - data
 # print(data1)
