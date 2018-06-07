@@ -17,6 +17,17 @@ class Data:
         for row in self.data:
             print(', '.join(row))
 
+    def __str__(self):
+        ret = ""
+        for row in self.data:
+           ret += str(row) + "\n"
+        return ret
+
+    def __add__(self, other):
+        for l in range(1, len(other.data)):
+            self.data.append(other.data[l])
+        return self
+
 
 class Chart:
 
@@ -112,22 +123,17 @@ class Chart:
                            " was on " + str(self.rank[data][i]) + " position\n"
         return ret
 
-
+    # finds position of country in given year as index, returns index (stating form 0)
     def findPosition(self, nr, name):
-        #self.position = [[-1 for x in range(len(self.country))] for y in range(2)]
         for j in range(len(self.country[nr])):
             if name == self.country[nr][j]:
                 return j
         return -1
 
-
     def rank_plot(self, nr, qtty):
         plt.plot(self.rank[nr][:qtty], self.country[nr][:qtty], "yo")
         plt.ylabel("Countries")
         plt.xlabel("Rank")
-        #plt.yticks(range(nr), self.countries)
-        #plt.xticks(rotation = "vertical")
-        #plt.margins(0.1)
         plt.title('RANK')
         plt.subplots_adjust(left=0.2)
         plt.show()
@@ -143,12 +149,12 @@ class Chart:
         plt.figure(1, figsize=(9, 3))
 
         plt.subplot(131)
-        plt.bar(self.country[nr][:qtty], self.family[nr][:qtty], color = "g")
+        plt.bar(self.country[nr][:qtty], self.family[nr][:qtty], color="g")
         plt.title('Family rate')
         plt.xticks(rotation = "vertical")
 
         plt.subplot(132)
-        plt.bar(self.country[nr][:qtty], self.rank[nr][:qtty], color = "y")
+        plt.bar(self.country[nr][:qtty], self.rank[nr][:qtty], color="y")
         plt.xticks(rotation = "vertical")
         plt.title('Rank')
 
@@ -234,23 +240,49 @@ class Chart:
 
         plt.show()
 
+    def throughYears(self, country):
+        pos = []
+        for i in range(self.data_qtty):
+            pos.append(self.findPosition(i, country))
+        plt.plot(self.years, pos, "g")
+        plt.ylabel("Rank")
+        plt.xlabel("Year")
+        plt.title(str(country) + " rank")
+        #plt.subplots_adjust(left=0.2)
+        plt.show()
+
 
 
 
 wykres = Chart()
+
+'''
 wykres.rank_plot(1, 10)
 wykres.life_expectancy(1, 15)
 wykres.few_charts(1,3)
 wykres.dystopia_chart(1, 10, "G", "France", "Belarus", "China", "Togo")
 wykres.freedom_chart(1, 10, "C", "France", "Belarus", "China", "Togo")
 wykres.trust_chart(1, 10, "R", "France", "Belarus", "China", "Japan")
+wykres.throughYears("Poland")
+wykres.throughYears("Belarus")
+'''
 
 
-# finding postion of country
+# finding postion of a country
 # print(wykres.findPosition(0, "Poland"))
 
-# str representation
+# str representation - chart
 # print(wykres)
+
+data1 = Data(sys.argv[1])
+data2 = Data(sys.argv[2])
+
+# str representation - data
+# print(data1)
+
+# add override
+# data3 = data1 + data2
+# print(data3)
 
 
 class MyTestCase(unittest.TestCase):
@@ -261,6 +293,15 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(wykres.country[0][2], "Denmark")
         self.assertEqual(wykres.country[1][0], "Denmark")
         self.assertEqual(wykres.country[2][0], "Norway")
+
+    def test_findPosition(self):
+        self.assertEqual(wykres.findPosition(0,"Switzerland"), 0)
+        self.assertEqual(wykres.findPosition(2,"Germany"), 15)
+        self.assertEqual(wykres.findPosition(0,"Poland"), 59)
+        self.assertEqual(wykres.findPosition(1,"Poland"), 56)
+        self.assertEqual(wykres.findPosition(2,"Poland"), 45)
+        self.assertEqual(wykres.findPosition(2,"qwerty"), -1)
+
 
 
 if __name__ == '__main__':
