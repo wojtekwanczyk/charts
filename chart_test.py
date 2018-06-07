@@ -1,5 +1,6 @@
 import unittest
-from chart import Chart
+import chart
+
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
@@ -10,4 +11,4 @@ class MyTestCase(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(argv=['first-arg-is-ignored'], exit=False)

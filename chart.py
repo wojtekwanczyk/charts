@@ -1,4 +1,5 @@
 import csv, sys
+import unittest
 import matplotlib.pyplot as plt
 from random import randint
 
@@ -64,8 +65,6 @@ class Chart:
             self.dystopia = [[0 for x in range(len(whole_data))] for y in range(self.data_qtty)]
 
     def __init__(self):
-        self.parameters = {'country': 0, 'rank': 1, 'score': 2, 'economy': 3, 'family': 4, 'health': 5,
-                           'generosity': 6, 'trust': 7, 'freedom': 8, 'dystopia': 9}
         self.country_i = []
         self.rank_i = []
         self.score_i = []
@@ -103,6 +102,24 @@ class Chart:
                 self.freedom[i][j - 1] = float(whole_data[j][self.freedom_i[i]])
                 self.dystopia[i][j - 1] = float(whole_data[j][self.dystopia_i[i]])
                 # print(whole_data[j-1])
+
+    def __str__(self):
+        ret = ""
+        for data in range(self.data_qtty):
+            for i in range(len(self.country[data])):
+                if(self.country[data][i] != 0):
+                    ret += "In " + str(self.years[data]) + " country " + str(self.country[data][i]) + \
+                           " was on " + str(self.rank[data][i]) + " position\n"
+        return ret
+
+
+    def findPosition(self, nr, name):
+        #self.position = [[-1 for x in range(len(self.country))] for y in range(2)]
+        for j in range(len(self.country[nr])):
+            if name == self.country[nr][j]:
+                return j
+        return -1
+
 
     def rank_plot(self, nr, qtty):
         plt.plot(self.rank[nr][:qtty], self.country[nr][:qtty], "yo")
@@ -228,6 +245,26 @@ wykres.dystopia_chart(1, 10, "G", "France", "Belarus", "China", "Togo")
 wykres.freedom_chart(1, 10, "C", "France", "Belarus", "China", "Togo")
 wykres.trust_chart(1, 10, "R", "France", "Belarus", "China", "Japan")
 
+
+# finding postion of country
+# print(wykres.findPosition(0, "Poland"))
+
+# str representation
+# print(wykres)
+
+
+class MyTestCase(unittest.TestCase):
+
+    def test_countries(self):
+        self.assertEqual(wykres.country[0][0], "Switzerland")
+        self.assertEqual(wykres.country[0][1], "Iceland")
+        self.assertEqual(wykres.country[0][2], "Denmark")
+        self.assertEqual(wykres.country[1][0], "Denmark")
+        self.assertEqual(wykres.country[2][0], "Norway")
+
+
+if __name__ == '__main__':
+    unittest.main(argv=['first-arg-is-ignored'])
 
 
 
